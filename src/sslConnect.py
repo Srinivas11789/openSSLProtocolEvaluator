@@ -10,9 +10,8 @@ class ssl_connect:
         self.host = host
         self.ssl_version = ssl_version
 
-    def certificate_fetch(self):
+    def default_certificate_fetch(self):
         cert = ''
-        #ssl_version = ssl.PROTOCOL_TLSv1
 
         try:
             cert = ssl.get_server_certificate((self.host, 443), self.ssl_version)
@@ -37,20 +36,16 @@ class ssl_connect:
         return certificate
 
     def crypto_supported(self):
-
         # Key exchange cryptography - cipher list
         pass
 
     def ssl_support(self):
-
         # Depreceiation Attack
         pass
 
 
-
-
 def main():
     sslconnection = ssl_connect("google.co.in")
-    print sslconnection.certificate_fetch()
+    print sslconnection.default_certificate_fetch()
 
 main()
