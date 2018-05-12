@@ -1,8 +1,12 @@
-# OpenSSL-Certificate-Fetcher
-Fetches the SSL Certificate of the remote server and displays the details
 
-Example Output:
+### Legacy Feature and Tool
 
+### OpenSSL-Certificate-Fetcher: 
+          Fetches the SSL Certificate of the remote server and displays the details
+
+#### Example Output:
+
+```
 [root@server5 pandian]# python openssl1.py "paytm.com"
 
 
@@ -65,5 +69,5 @@ It is free software and it comes without any Warranty
 
 
 -> End !
-
+```
 
