@@ -37,15 +37,53 @@ class ssl_connect:
 
     def crypto_supported(self):
         # Key exchange cryptography - cipher list
+        # ssl.wrap_socket(s, ssl_version=ver, ciphers="ADH-AES256-SHA")
         pass
 
     def ssl_support(self):
-        # Depreceiation Attack
-        pass
+        # Possible Depreceiation Attack
+        # ssl.PROTOCOL_SSLv2, ssl.PROTOCOL_SSLv3????
 
+        # TLS versions 1 --> 1.2
+        ssl_tls_versions = [ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_TLSv1_1, ssl.PROTOCOL_TLSv1_2]
+        data = "Hello SSL"
+        port = 443
+        result = []
+        for ver in ssl_tls_versions:
+            # TCP socket creation
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(10)
+            sslSock = ssl.wrap_socket(s, ssl_version=ver)
+            try:
+                sslSock.connect((self.host, port))
+                sslSock.send(data)
+                result.append(True)
+                sslSock.close()
+            except:
+                result.append(False)
 
+        # TLS version 1.3 
+        # * there is no constant to enable this in ssl library - Trick: use sslv23 and disable other ssl tls versions
+        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+        context.protocol = ssl.PROTOCOL_SSLv23
+        context.options |= ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3 | ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(10)
+        sslSock = context.wrap_socket(s, server_hostname=self.host)
+        try:
+            sslSock.connect((self.host, port))
+            sslSock.send(data)
+            result.append(True)
+            sslSock.close()
+        except:
+            result.append(False)
+        return result 
+           
 def main():
     sslconnection = ssl_connect("google.co.in")
     print sslconnection.default_certificate_fetch()
-
+    sslconnection = ssl_connect("tls13.crypto.mozilla.org")
+    print sslconnection.default_certificate_fetch()
+    print sslconnection.ssl_support()
+    
 main()
